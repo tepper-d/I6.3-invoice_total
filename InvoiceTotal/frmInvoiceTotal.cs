@@ -33,6 +33,24 @@ namespace InvoiceTotal
             decimal subtotal = Convert.ToDecimal(txtSubtotal.Text);
             decimal discountPercent = .0m;
 
+            // Modified the call statement to work with GetInvoicesAmounts()
+            discountPercent = GetInvoicesAmounts(customerType, subtotal, discountPercent);
+
+            decimal discountAmount = subtotal * discountPercent;
+            decimal invoiceTotal = subtotal - discountAmount;
+
+            txtDiscountPercent.Text = discountPercent.ToString("p1");
+            txtDiscountAmount.Text = discountAmount.ToString("c");
+            txtTotal.Text = invoiceTotal.ToString("c");
+
+            txtCustomerType.Focus();
+        }
+/* **********************************************************************************************
+ *   2. Add a method named GetInvoicesAmounts() that accepts the customer type and subtotal,    *
+ *      and returns the discount percent.                                                       *
+ * *********************************************************************************************/
+        private static decimal GetInvoicesAmounts(string customerType, decimal subtotal, decimal discountPercent)
+        {
             if (customerType == "R")
             {
                 if (subtotal < 100)
@@ -54,14 +72,7 @@ namespace InvoiceTotal
                 discountPercent = .4m;
             }
 
-            decimal discountAmount = subtotal * discountPercent;
-            decimal invoiceTotal = subtotal - discountAmount;
-
-            txtDiscountPercent.Text = discountPercent.ToString("p1");
-            txtDiscountAmount.Text = discountAmount.ToString("c");
-            txtTotal.Text = invoiceTotal.ToString("c");
-
-            txtCustomerType.Focus();
+            return discountPercent;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
