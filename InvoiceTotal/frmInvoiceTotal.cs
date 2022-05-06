@@ -31,13 +31,14 @@ namespace InvoiceTotal
         {
             string customerType = txtCustomerType.Text;
             decimal subtotal = Convert.ToDecimal(txtSubtotal.Text);
-            decimal discountPercent = .0m;
+            //decimal discountAmount = subtotal * discountPercent;
 
-            // Modified the call statement to work with GetInvoicesAmounts()
-            discountPercent = GetInvoicesAmounts(customerType, subtotal, discountPercent);
-
-            decimal discountAmount = subtotal * discountPercent;
-            decimal invoiceTotal = subtotal - discountAmount;
+/* *****************************************************************************************************************
+ *  5-A. Modify the calling code so it deconstructs the tuple that's returned by the GetInvoicesAmounts() method.  *
+ *  5-B. Once modified, delete the statements that declare and calculate the discount amount and invoice total     *
+ * ****************************************************************************************************************/
+            (decimal discountAmount, decimal discountPercent, decimal invoiceTotal) = 
+                this.GetInvoicesAmounts(customerType, subtotal, discountPercent); // 5-A
 
             txtDiscountPercent.Text = discountPercent.ToString("p1");
             txtDiscountAmount.Text = discountAmount.ToString("c");
@@ -45,12 +46,19 @@ namespace InvoiceTotal
 
             txtCustomerType.Focus();
         }
-/* **********************************************************************************************
- *   2. Add a method named GetInvoicesAmounts() that accepts the customer type and subtotal,    *
- *      and returns the discount percent.                                                       *
- * *********************************************************************************************/
-        private static decimal GetInvoicesAmounts(string customerType, decimal subtotal, decimal discountPercent)
+
+/* ******************************************************************************************
+* 4-A. Modify the declaration for the GetInvoiceAmounts() method so it returns a tuple that *
+*    includes the discount percent and the discount amount.                                 *
+* ******************************************************************************************/
+        //private static decimal GetInvoicesAmounts(string customerType, decimal subtotal, decimal discountPercent)
+        private (decimal discountAmount, decimal discountPercent, decimal invoiceTotal) 
+            GetInvoicesAmounts(string customerType, decimal subtotal, decimal InvoiceTotal)
         {
+            decimal discountPercent = .0m; 
+            decimal discountAmount = subtotal * discountPercent;
+            decimal invoiceTotal = subtotal - discountAmount;
+
             if (customerType == "R")
             {
                 if (subtotal < 100)
@@ -72,7 +80,7 @@ namespace InvoiceTotal
                 discountPercent = .4m;
             }
 
-            return discountPercent;
+            return (discountAmount, discountPercent, invoiceTotal);
         }
 
         private void btnExit_Click(object sender, EventArgs e)
